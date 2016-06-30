@@ -35,6 +35,11 @@
 ;; 2. Give the command a keybinding
 ;; ================================
 
+;; `avy-flycheck-setup' bind `avy-flycheck-goto-error' to `C-c ! g'.
+;; (avy-flycheck-setup)
+
+;; or you can bind `avy-flycheck-goto-error' in global key map
+;; (global-flycheck-mode)
 ;; (global-set-key (kbd "C-c '") #'avy-flycheck-goto-error)
 
 ;; 3 Acknowledgment
@@ -132,16 +137,18 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
   (avy-with avy-flycheck-jump-word
     (let* ((r (avy--flycheck (eq arg 4))))
       (unless (or (not r) (eq r t))
-        (avy-action-goto r)))))
+        (avy-action-goto
 
-;; ;;;###autoload
-;; (defun avy-flycheck-setup ()
-;;   "Set up default keybindings."
-;;   (interactive)
-;;   (eval-after-load "flycheck"
-;;     ;; TODO: need to fix why I can not add new command to `flycheck-mode-map'
-;;     '(define-key flycheck-mode-map (kbd "C-c ! g") #'avy-flycheck-goto-error)
-;;     ))
+;;;###autoload
+(defun avy-flycheck-setup ()
+  "Set up default keybindings."
+  (interactive)
+  (if (featurep 'flycheck)
+      (define-key flycheck-mode-map (kbd "C-c ! g") #'avy-flycheck-goto-error)
+    (eval-after-load "flycheck"
+      ;; TODO: need to fix why I can not add new command to `flycheck-mode-map'
+      '(define-key flycheck-mode-map (kbd "C-c ! g") #'avy-flycheck-goto-error)
+      )))
 
 (provide 'avy-flycheck)
 

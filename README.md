@@ -19,8 +19,13 @@ then simply `require` the package
 ```
 
 ### bind to a key for your convenience.
->you can choose your own binding.
+> the package provides a function called `avy-flycheck-setup` to bind `avy-flycheck-goto-error` to `<C-c ! g>`
 ```elisp
+(avy-flycheck-setup)
+```
+>or you can choose your own binding.
+```elisp
+(global-flycheck-mode)
 (global-set-key (kbd "C-c '") #'avy-flycheck-goto-error)
 ```
 
