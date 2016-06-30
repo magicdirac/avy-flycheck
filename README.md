@@ -1,5 +1,5 @@
-# (avy-flycheck)[https://github.com/magicdirac/avy-flycheck]
-(`avy-flycheck`)[https://github.com/magicdirac/avy-flycheck] is a GNU Emacs package for syntax errors navigation. It depends on `flycheck` to provide syntax error checking and `avy` for easy navigation.
+# [avy-flycheck](https://github.com/magicdirac/avy-flycheck)
+[`avy-flycheck`](https://github.com/magicdirac/avy-flycheck) is a GNU Emacs package for syntax errors navigation. It depends on `flycheck` to provide syntax error checking and `avy` for easy navigation.
 
 Jump to and fix syntax errors using `flycheck` with `avy` interface
 
