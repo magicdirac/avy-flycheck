@@ -79,25 +79,31 @@ Defaults to pre."
             (narrow-to-region top (or end (window-end (selected-window) t)))
             (overlay-recenter (point-max))
             ;; TODO: check how to deal with multiple times overlayed region.
-            (let ((overlay-list (overlays-in (point-min) (point-max))))
+            (let* ((overlay-list (overlays-in (point-min) (point-max)))
+                   (intersting-overlay (cl-remove-if
+                                        (lambda (element)
+                                          (let ((pos (overlay-start element)))
+                                            (not (and (get-char-property pos 'flycheck-error)
+                                                      ;; Check if this error is interesting
+                                                      (flycheck-error-level-interesting-at-pos-p pos)))))
+                                        overlay-list))
+                   (new-candidates (mapcar
+                                    (lambda (element)
+                                      (cons
+                                       (if (eq avy-flycheck-style 'post)
+                                           (overlay-end element)
+                                         (overlay-start element))
+                                       (selected-window)))
+                                    intersting-overlay)))
               (setq candidates
                     (append
-                     (mapcar
-                      (lambda (element)
-                        (cons
-                         (if (eq avy-flycheck-style 'post)
-                             (overlay-end element)
-                           (overlay-start element))
-                         (selected-window)))
-                      (cl-remove-if
-                       (lambda (element)
-                         (let ((pos (overlay-start element)))
-                           (not (and (get-char-property pos 'flycheck-error)
-                                     ;; Check if this error is interesting
-                                     (flycheck-error-level-interesting-at-pos-p pos)))))
-                       overlay-list))
-                     candidates)))))))
+                     (sort new-candidates
+                           ;; sort per window basis.
+                           #'(lambda (a b) (<= (car a) (car b))))
+                     candidates))
+              )))))
     candidates))
+
 
 (defun avy--flycheck (&optional arg beg end)
   "Select a flycheck syntax error.
@@ -111,10 +117,10 @@ Narrow the scope to BEG END."
               (message "There is only one Syntax error and jump to it"))
           (avy--process
            candidates
-           (avy--style-fn avy-flycheck-style))))
+           (avy--style-fn avy-flycheck-style)))
     (progn
       (message "There is no Syntax error found.")
-      nil)))
+      nil))))
 
 ;;;###autoload
 (defun avy-flycheck-goto-error (&optional arg)
