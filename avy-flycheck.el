@@ -35,12 +35,15 @@
 ;; 2. Give the command a keybinding
 ;; ================================
 
-;; (global-set-key (kbd "C-c ;") #'avy-flycheck-goto-error)
+;; (global-set-key (kbd "C-c '") #'avy-flycheck-goto-error)
 
 ;; 3 Acknowledgment
 ;; ================
 
-;; This package is based on [abo-abo(Oleh Krehel)]'s awesome [avy] package.
+;; This package is based on awesome [flycheck] package and [abo-abo(Oleh
+;; Krehel)]'s awesome [avy] package.
+
+;; [flycheck] http://www.flycheck.org  https://github.com/flycheck/flycheck
 
 ;; [abo-abo(Oleh Krehel)] https://github.com/abo-abo/
 
@@ -103,7 +106,6 @@ Defaults to pre."
                      candidates))
               )))))
     candidates))
-
 
 (defun avy--flycheck (&optional arg beg end)
   "Select a flycheck syntax error.

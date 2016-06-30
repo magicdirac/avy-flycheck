@@ -1,9 +1,12 @@
 # [avy-flycheck](https://github.com/magicdirac/avy-flycheck)
-[`avy-flycheck`](https://github.com/magicdirac/avy-flycheck) is a GNU Emacs package for syntax errors navigation. It depends on `flycheck` to provide syntax error checking and `avy` for easy navigation.
+[`avy-flycheck`](https://github.com/magicdirac/avy-flycheck) is a GNU Emacs package for syntax errors navigation. It depends on  [`flycheck`](http://www.flycheck.org) to provide syntax error checking and  [`avy`](https://github.com/abo-abo/avy) for easy navigation.
 
-Jump to and fix syntax errors using `flycheck` with `avy` interface
+Jump to and fix syntax errors using [`flycheck`](http://www.flycheck.org) with [`avy`](https://github.com/abo-abo/avy) interface
 
 ## Configuration overview
+you need install [`flycheck`](http://www.flycheck.org) and [`avy`](https://github.com/abo-abo/avy)
+
+you can get them from [flycheck github](https://github.com/flycheck/flycheck) and [avy github](https://github.com/abo-abo/avy).
 
 ### add path of this package to your `load-path`
 ```elisp
@@ -18,7 +21,7 @@ then simply `require` the package
 ### bind to a key for your convenience.
 >you can choose your own binding.
 ```elisp
-(global-set-key (kbd "C-c ;") #'avy-flycheck-goto-error)
+(global-set-key (kbd "C-c '") #'avy-flycheck-goto-error)
 ```
 
 ### A few customizations are provided.
