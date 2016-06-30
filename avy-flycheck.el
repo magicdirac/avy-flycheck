@@ -49,7 +49,7 @@
 ;;; Code:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 (require 'avy)
 (require 'flycheck)
 
@@ -72,10 +72,11 @@ Defaults to pre."
   (let (candidates)
     (avy-dowindows arg
       (let ((top (or beg (window-start)))
-            (bot (or end (window-end))))
+            ;; (bot (or end (window-end)))
+            )
         (save-excursion
           (save-restriction
-            (narrow-to-region top bot)
+            (narrow-to-region top (or end (window-end (selected-window) t)))
             (overlay-recenter (point-max))
             ;; TODO: check how to deal with multiple times overlayed region.
             (let ((overlay-list (overlays-in (point-min) (point-max))))
@@ -88,22 +89,21 @@ Defaults to pre."
                              (overlay-end element)
                            (overlay-start element))
                          (selected-window)))
-                      (remove-if
+                      (cl-remove-if
                        (lambda (element)
                          (let ((pos (overlay-start element)))
                            (not (and (get-char-property pos 'flycheck-error)
                                      ;; Check if this error is interesting
                                      (flycheck-error-level-interesting-at-pos-p pos)))))
-                      overlay-list))
-                    candidates)))))))
+                       overlay-list))
+                     candidates)))))))
     candidates))
 
 (defun avy--flycheck (&optional arg beg end)
-"Select a flycheck syntax error.
+  "Select a flycheck syntax error.
 The window scope is determined by `avy-all-windows' (ARG negates it).
 Narrow the scope to BEG END."
   (let ((avy-action #'identity)
-        (avy-style 'post)
         (candidates (avy--flycheck--cands arg beg end)))
     (if candidates
         (progn
@@ -111,7 +111,7 @@ Narrow the scope to BEG END."
               (message "There is only one Syntax error and jump to it"))
           (avy--process
            candidates
-           (avy--style-fn avy-style))))
+           (avy--style-fn avy-flycheck-style))))
     (progn
       (message "There is no Syntax error found.")
       nil)))
