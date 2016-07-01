@@ -85,7 +85,7 @@ Defaults to pre."
             (narrow-to-region top (or end (window-end (selected-window) t)))
             (overlay-recenter (point-max))
             ;; TODO: check how to deal with multiple times overlayed region.
-            (let* ((overlay-list (overlays-in (point-min) (point-max)))
+            (let* ((overlay-list (flycheck-overlays-in (point-min) (point-max)))
                    (intersting-overlay
                     (cl-remove-if
                      (lambda (element)
@@ -132,7 +132,7 @@ Narrow the scope to BEG END."
   "Jump to a flycheck syntax error.
 The window scope is determined by `avy-all-windows' (ARG negates it)."
   (interactive (list current-prefix-arg))
-  (avy-with avy-flycheck-jump-word
+  (avy-with avy-flycheck-goto-error
     (let* ((r (avy--flycheck (eq arg 4))))
       (unless (or (not r) (eq r t))
         (avy-action-goto r)))))
@@ -141,12 +141,12 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
 (defun avy-flycheck-setup ()
   "Set up default keybindings."
   (interactive)
-  (if (featurep 'flycheck)
-      (define-key flycheck-mode-map (kbd "C-c ! g") #'avy-flycheck-goto-error)
-    (eval-after-load "flycheck"
-      ;; TODO: need to fix why I can not add new command to `flycheck-mode-map'
-      '(define-key flycheck-mode-map (kbd "C-c ! g") #'avy-flycheck-goto-error)
-      )))
+  ;;(if (featurep 'flycheck)
+  (define-key flycheck-mode-map (kbd "C-c ! g") #'avy-flycheck-goto-error)
+  ;; (eval-after-load 'flycheck
+  ;;  ;; TODO: need to fix why I can not add new command to `flycheck-mode-map'
+  ;;  '(define-key flycheck-mode-map (kbd "C-c ! g") #'avy-flycheck-goto-error)
+  );;))
 
 (provide 'avy-flycheck)
 
