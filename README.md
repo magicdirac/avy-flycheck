@@ -19,11 +19,11 @@ then simply `require` the package
 ```
 
 ### bind to a key for your convenience.
-> the package provides a function called `avy-flycheck-setup` to bind `avy-flycheck-goto-error` to `<C-c ! g>`
+> the package provides a function called `avy-flycheck-setup` to bind `avy-flycheck-goto-error` to @@html:<kbd>@@C-c ! g@@html:</kbd>@@
 ```elisp
 (avy-flycheck-setup)
 ```
->or you can choose your own binding.
+>or you can choose your own binding. Example: bind to @@html:<kbd>@@C-'@@html:</kbd>@@
 ```elisp
 (global-flycheck-mode)
 (global-set-key (kbd "C-c '") #'avy-flycheck-goto-error)

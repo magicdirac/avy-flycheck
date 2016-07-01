@@ -79,22 +79,21 @@ Defaults to pre."
 (defun avy--flycheck--cands (&optional arg beg end)
   (let (candidates)
     (avy-dowindows arg
-      (let ((top (or beg (window-start)))
-            ;; (bot (or end (window-end)))
-            )
+      (let ((top (or beg (window-start))))
         (save-excursion
           (save-restriction
             (narrow-to-region top (or end (window-end (selected-window) t)))
             (overlay-recenter (point-max))
             ;; TODO: check how to deal with multiple times overlayed region.
             (let* ((overlay-list (overlays-in (point-min) (point-max)))
-                   (intersting-overlay (cl-remove-if
-                                        (lambda (element)
-                                          (let ((pos (overlay-start element)))
-                                            (not (and (get-char-property pos 'flycheck-error)
-                                                      ;; Check if this error is interesting
-                                                      (flycheck-error-level-interesting-at-pos-p pos)))))
-                                        overlay-list))
+                   (intersting-overlay
+                    (cl-remove-if
+                     (lambda (element)
+                       (let ((pos (overlay-start element)))
+                         (not (and (get-char-property pos 'flycheck-error)
+                                   ;; Check if this error is interesting
+                                   (flycheck-error-level-interesting-at-pos-p pos)))))
+                     overlay-list))
                    (new-candidates (mapcar
                                     (lambda (element)
                                       (cons
@@ -104,9 +103,8 @@ Defaults to pre."
                                        (selected-window)))
                                     intersting-overlay)))
               (setq candidates
-                    (append
+                    (append ;; sort per window basis.
                      (sort new-candidates
-                           ;; sort per window basis.
                            #'(lambda (a b) (<= (car a) (car b))))
                      candidates))
               )))))
@@ -125,9 +123,9 @@ Narrow the scope to BEG END."
           (avy--process
            candidates
            (avy--style-fn avy-flycheck-style)))
-    (progn
-      (message "There is no Syntax error found.")
-      nil))))
+      (progn
+        (message "There is no Syntax error found.")
+        nil))))
 
 ;;;###autoload
 (defun avy-flycheck-goto-error (&optional arg)
@@ -137,7 +135,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
   (avy-with avy-flycheck-jump-word
     (let* ((r (avy--flycheck (eq arg 4))))
       (unless (or (not r) (eq r t))
-        (avy-action-goto
+        (avy-action-goto r)))))
 
 ;;;###autoload
 (defun avy-flycheck-setup ()
