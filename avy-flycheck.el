@@ -4,10 +4,9 @@
 
 ;; Author: Xu Ma <magicdirac@gmail.com>
 ;; URL: https://github.com/magicdirac/flycheck
-;; Package-Version: 0.0.1
-;; Version: 0.0.1
-;; Package-Requires: ((avy "0.4.0")) ((flycheck))
-;; Keywords: avy flycheck
+;; keywords: tools, convenience, avy, flycheck
+;; Version: 0.0.1-cvs
+;; Package-Requires: ((emacs "24.1") (flycheck "0.14") (seq "1.11") (avy "0.4.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,6 +22,8 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+
+;; Add avy support for Flycheck synatax errors quick navigation.
 
 ;; 1. Load the package
 ;; ===================
@@ -56,8 +57,6 @@
 
 ;;; Code:
 
-
-(eval-when-compile (require 'cl-lib))
 (require 'avy)
 (require 'flycheck)
 
@@ -76,6 +75,41 @@ Defaults to pre."
           (const :tag "Post" post)
           (const :tag "De Bruijn" de-bruijn)))
 
+;; ;; remove dependency of cl-lib.el
+;; (defun avy--flycheck--cands (&optional arg beg end)
+;;   (let (candidates)
+;;     (avy-dowindows arg
+;;       (let ((top (or beg (window-start))))
+;;         (save-excursion
+;;           (save-restriction
+;;             (narrow-to-region top (or end (window-end (selected-window) t)))
+;;             (overlay-recenter (point-max))
+;;             ;; TODO: check how to deal with multiple times overlayed region.
+;;             (let* ((overlay-list (flycheck-overlays-in (point-min) (point-max)))
+;;                    (intersting-overlay
+;;                     (cl-remove-if
+;;                      (lambda (element)
+;;                        (let ((pos (overlay-start element)))
+;;                          (not (and (get-char-property pos 'flycheck-error)
+;;                                    ;; Check if this error is interesting
+;;                                    (flycheck-error-level-interesting-at-pos-p pos)))))
+;;                      overlay-list))
+;;                    (new-candidates (mapcar
+;;                                     (lambda (element)
+;;                                       (cons
+;;                                        (if (eq avy-flycheck-style 'post)
+;;                                            (overlay-end element)
+;;                                          (overlay-start element))
+;;                                        (selected-window)))
+;;                                     intersting-overlay)))
+;;               (setq candidates
+;;                     (append ;; sort per window basis.
+;;                      (sort new-candidates
+;;                            #'(lambda (a b) (<= (car a) (car b))))
+;;                      candidates))
+;;               )))))
+;;     candidates))
+
 (defun avy--flycheck--cands (&optional arg beg end)
   (let (candidates)
     (avy-dowindows arg
@@ -87,12 +121,12 @@ Defaults to pre."
             ;; TODO: check how to deal with multiple times overlayed region.
             (let* ((overlay-list (flycheck-overlays-in (point-min) (point-max)))
                    (intersting-overlay
-                    (cl-remove-if
+                    (seq-filter
                      (lambda (element)
                        (let ((pos (overlay-start element)))
-                         (not (and (get-char-property pos 'flycheck-error)
-                                   ;; Check if this error is interesting
-                                   (flycheck-error-level-interesting-at-pos-p pos)))))
+                         (and (get-char-property pos 'flycheck-error)
+                              ;; Check if this error is interesting
+                              (flycheck-error-level-interesting-at-pos-p pos))))
                      overlay-list))
                    (new-candidates (mapcar
                                     (lambda (element)
@@ -106,8 +140,7 @@ Defaults to pre."
                     (append ;; sort per window basis.
                      (sort new-candidates
                            #'(lambda (a b) (<= (car a) (car b))))
-                     candidates))
-              )))))
+                     candidates)))))))
     candidates))
 
 (defun avy--flycheck (&optional arg beg end)
@@ -123,9 +156,8 @@ Narrow the scope to BEG END."
           (avy--process
            candidates
            (avy--style-fn avy-flycheck-style)))
-      (progn
-        (message "There is no Syntax error found.")
-        nil))))
+      (message "There is no Syntax error found.")
+      nil)))
 
 ;;;###autoload
 (defun avy-flycheck-goto-error (&optional arg)
