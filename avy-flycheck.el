@@ -189,14 +189,14 @@ Defaults to pre."
 ;;         (avy-action-goto r)))))
 
 ;;;###autoload
-(defun avy-flycheck-goto-error (&optional arg beg end)
+(defun avy-flycheck-goto-error (&optional arg)
   "Jump to a flycheck syntax error.
 The window scope is determined by `avy-all-windows' (ARG negates it)."
   (interactive (list current-prefix-arg))
   (avy-with avy-flycheck-goto-error
     (let ((avy-dispatch-alist avy-flycheck-dispatch-alist)) ;; By-pass avy-action
       (avy--process
-       (avy--flycheck--cands (eq arg 4) beg end)
+       (avy--flycheck--cands (eq arg 4))
        (avy--style-fn avy-flycheck-style)))))
 
 ;; ;;;###autoload
