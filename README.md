@@ -25,7 +25,7 @@ then simply `require` the package
 ```elisp
 (avy-flycheck-setup)
 ```
->or you can choose your own binding. Example: bind to `C-'`
+> or you can choose your own binding. Example: bind to `C-'`
 <!---  for html syntax, might need org file format keep it here --->
 <!--- @@html:<kbd>@@C-c ! g@@html:</kbd>@@ --->
 ```elisp
@@ -34,11 +34,19 @@ then simply `require` the package
 ```
 
 ### A few customizations are provided.
->Set Method for displaying avy overlays.
+> Set Method for displaying avy overlays.
 ```elisp
 (setq avy-flycheck-style 'pre)
 ```
-
+> Custom `avy-flycheck-dispatch-alist': avy-actions available for `avy-flycheck-goto-error'.
+```elisp
+(setq avy-flycheck-dispatch-alist
+      '((?x . avy-action-kill-move)
+        (?X . avy-action-kill-stay)
+        (?m . avy-action-mark)
+        (?n . avy-action-copy)
+        (?i . avy-action-ispell)))
+```
 ## Contributing
 
 ### Copyright Assignment
