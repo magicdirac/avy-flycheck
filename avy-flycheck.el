@@ -159,7 +159,7 @@ Defaults to pre."
                     (append ;; sort per window basis.
                      (sort new-candidates
                            #'(lambda (a b) (<= (car a) (car b))))
-                     candidates)))))))
+                     (seq-uniq candidates))))))))
     candidates))
 
 ;; (defun avy--flycheck (&optional arg beg end)
