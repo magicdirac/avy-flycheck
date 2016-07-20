@@ -38,7 +38,7 @@ then simply `require` the package
 ```elisp
 (setq avy-flycheck-style 'pre)
 ```
-> Custom `avy-flycheck-dispatch-alist': avy-actions available for `avy-flycheck-goto-error'.
+> Custom `avy-flycheck-dispatch-alist`: config `avy-action` available for `avy-flycheck-goto-error`.
 ```elisp
 (setq avy-flycheck-dispatch-alist
       '((?x . avy-action-kill-move)
