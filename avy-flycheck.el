@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; Add avy support for Flycheck synatax errors quick navigation.
+;; Add avy support for Flycheck syntax errors quick navigation.
 
 ;; 1. Load the package
 ;; ===================
